@@ -19,21 +19,9 @@ export default function Detail() {
 
   if (!cat) {
     return (
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: '100vh',
-          flexDirection: 'column',
-          gap: '16px',
-        }}
-      >
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', flexDirection: 'column', gap: '16px' }}>
         <p style={{ color: '#FF6B35', letterSpacing: '0.1em' }}>Gato no encontrado.</p>
-        <Link
-          to="/"
-          style={{ fontSize: '12px', color: '#ffffff40', letterSpacing: '0.2em', textDecoration: 'none' }}
-        >
+        <Link to="/" style={{ fontSize: '12px', color: '#ffffff40', letterSpacing: '0.2em', textDecoration: 'none' }}>
           ← Volver a la galería
         </Link>
       </div>
@@ -48,7 +36,6 @@ export default function Detail() {
       transition={{ duration: 0.5 }}
       style={{ minHeight: '100vh', background: '#080808' }}
     >
-      {/* Nav */}
       <Header
         onBack={handleBack}
         style={{
@@ -59,119 +46,44 @@ export default function Detail() {
         }}
       />
 
-      {/* Content grid */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          minHeight: '100vh',
-        }}
-      >
-        {/* Image panel */}
-        <motion.div
-          initial={{ x: -50, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.65, ease: [0.25, 0.1, 0.25, 1] }}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '100px 40px 60px',
-            position: 'relative',
-          }}
-        >
-          {/* Glow behind image */}
-          <div
-            style={{
-              position: 'absolute',
-              width: '60%',
-              height: '60%',
-              borderRadius: '50%',
-              background: cat.color,
-              opacity: 0.06,
-              filter: 'blur(80px)',
-            }}
-          />
+      {/* Contenedor Padre: columna en móvil, fila en desktop */}
+      <div className="flex flex-col lg:flex-row" style={{ minHeight: '100vh', paddingTop: '80px' }}>
+
+        {/* Bloque Imagen — primero en el DOM */}
+        <div className="w-full lg:w-1/2 flex justify-center mb-8 lg:mb-0" style={{ padding: '40px 32px 0' }}>
           <img
             src={cat.image}
             alt={cat.name}
             style={{
-              maxHeight: '72vh',
-              maxWidth: '100%',
+              width: '100%',
+              maxWidth: '320px',
+              height: 'auto',
               objectFit: 'contain',
               filter: `drop-shadow(0 0 48px ${cat.color}30)`,
-              position: 'relative',
-              zIndex: 1,
             }}
           />
-        </motion.div>
+        </div>
 
-        {/* Info panel */}
-        <motion.div
-          initial={{ x: 50, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.65, ease: [0.25, 0.1, 0.25, 1], delay: 0.1 }}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            padding: '100px 48px 60px 36px',
-            borderLeft: `1px solid ${cat.color}18`,
-          }}
-        >
-          <p
-            style={{
-              fontSize: '10px',
-              letterSpacing: '0.38em',
-              textTransform: 'uppercase',
-              color: cat.color,
-              marginBottom: '18px',
-            }}
-          >
+        {/* Bloque Texto — debajo en móvil, derecha en desktop */}
+        <div className="w-full lg:w-1/2 text-center lg:text-left px-4 lg:px-12 flex flex-col items-center lg:items-start justify-center" style={{ paddingBottom: '60px' }}>
+
+          <p style={{ fontSize: '10px', letterSpacing: '0.38em', textTransform: 'uppercase', color: cat.color, marginBottom: '18px' }}>
             {cat.title}
           </p>
 
-          <h1
-            style={{
-              fontSize: 'clamp(44px, 5.5vw, 76px)',
-              fontWeight: 900,
-              letterSpacing: '-0.04em',
-              color: '#f0ede8',
-              lineHeight: 0.92,
-              marginBottom: '32px',
-            }}
-          >
+          <h1 style={{ fontSize: 'clamp(44px, 5.5vw, 76px)', fontWeight: 900, letterSpacing: '-0.04em', color: '#f0ede8', lineHeight: 0.92, marginBottom: '32px' }}>
             {cat.name}
           </h1>
 
-          <p
-            style={{
-              fontSize: 'clamp(14px, 1.1vw, 16px)',
-              lineHeight: 1.75,
-              color: '#8a8a8a',
-              maxWidth: '380px',
-              marginBottom: '48px',
-            }}
-          >
+          <p style={{ fontSize: 'clamp(14px, 1.1vw, 16px)', lineHeight: 1.75, color: '#8a8a8a', maxWidth: '380px', marginBottom: '48px' }}>
             {cat.description}
           </p>
 
-          {/* Metadata row */}
-          <div style={{ display: 'flex', gap: '36px', marginBottom: '48px' }}>
-            {[
-              { label: 'Edición', value: cat.edition },
-              { label: 'Año', value: cat.year },
-            ].map(({ label, value }) => (
-              <div key={label}>
-                <p
-                  style={{
-                    fontSize: '9px',
-                    letterSpacing: '0.25em',
-                    textTransform: 'uppercase',
-                    color: '#ffffff28',
-                    marginBottom: '6px',
-                  }}
-                >
+          {/* Specs */}
+          <div className="flex justify-center lg:justify-start gap-12 w-full" style={{ marginBottom: '48px' }}>
+            {[{ label: 'Edición', value: cat.edition }, { label: 'Año', value: cat.year }].map(({ label, value }) => (
+              <div key={label} className="flex flex-col items-center lg:items-start">
+                <p style={{ fontSize: '9px', letterSpacing: '0.25em', textTransform: 'uppercase', color: '#ffffff28', marginBottom: '6px' }}>
                   {label}
                 </p>
                 <p style={{ fontSize: '17px', fontWeight: 600, color: '#f0ede8' }}>{value}</p>
@@ -180,16 +92,8 @@ export default function Detail() {
           </div>
 
           {/* Divider */}
-          <div
-            style={{
-              width: '40px',
-              height: '1px',
-              background: `${cat.color}50`,
-              marginBottom: '40px',
-            }}
-          />
+          <div className="mx-auto lg:mx-0" style={{ width: '40px', height: '1px', background: `${cat.color}50`, marginBottom: '40px' }} />
 
-          {/* CTA */}
           <motion.button
             whileHover={{ backgroundColor: cat.color, color: '#080808', borderColor: cat.color }}
             transition={{ duration: 0.18 }}
@@ -209,7 +113,8 @@ export default function Detail() {
           >
             Adquirir pieza →
           </motion.button>
-        </motion.div>
+
+        </div>
       </div>
     </motion.div>
   );

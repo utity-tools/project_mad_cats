@@ -1,16 +1,22 @@
-# React + Vite
+# 🐱 MAD CATS
+### *The Underground 3D Digital Art Collection*
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+---
 
-Currently, two official plugins are available:
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b122a5c9-59df-4592-920d-d8438132754d" width="100%" alt="Mad Cats Home Showcase">
+</p>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🎭 La Experiencia
+Mad Cats redefine la narrativa visual mediante un **túnel inmersivo en el eje Z**. No es una galería; es una inmersión en el ecosistema castizo-futurista de Madrid.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🤖 Ingeniería de Vanguardia (Human-AI Collaboration)
+Este proyecto es un caso de estudio de **Desarrollo Aumentado por IA**, utilizando **Claude 3.5 Sonnet** para:
+* **Z-Axis Rendering:** Lógica de scroll 3D fluida.
+* **Responsive Architecture:** Adaptación cinematográfica de layouts en tiempo real.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+🚀 **[Explorar Mad Cats Live](https://project-mad-cats.vercel.app)**
