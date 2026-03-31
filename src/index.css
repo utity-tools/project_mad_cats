@@ -35,3 +35,13 @@ input::placeholder,
 textarea::placeholder {
   color: #ffffff25;
 }
+
+@media (min-width: 1024px) {
+  .guardian-img {
+    width: 45vw;
+    height: auto;
+    margin-top: -12vh;
+    object-fit: cover;
+    object-position: top;
+  }
+}

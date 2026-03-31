@@ -4,17 +4,16 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useAppContext } from '../context/AppContext';
 import Header from '../components/Header';
 
-// Each cat's position in the 3D tunnel (xVw = vw offset from center, yVh = vh offset, z = depth in px)
-// zIndex mirrors 3D depth in 2D stacking: closest card must win over overlapping siblings.
+// Gallery order: Chulapa → Chulapo → Churro → Castañuela (deepest, end of tunnel).
+// zIndex mirrors 3D depth so closer cards win in flat 2D stacking contexts.
 const CAT_POSITIONS = [
-  { xVw: -27, yVh:  2, z: -320,  zIndex: 40 },
-  { xVw:  24, yVh: -7, z: -760,  zIndex: 30 },
-  { xVw: -21, yVh:  9, z: -1200, zIndex: 20 },
-  { xVw:  13, yVh:  0, z: -1640, zIndex: 10 },
+  { xVw:  24, yVh: -7, z: -760,  zIndex: 30 },  // Chulapa
+  { xVw: -21, yVh:  9, z: -1200, zIndex: 20 },  // Chulapo
+  { xVw:  13, yVh:  0, z: -1640, zIndex: 10 },  // Churro
+  { xVw:   0, yVh:  0, z: -2000, zIndex:  5 },  // Castañuela — end of tunnel
 ];
 
 function CatCard({ cat, position }) {
-  // Card width as a shared value so the Link and motion.div agree on the same size.
   const CARD_W = 'clamp(140px, 18vw, 240px)';
 
   return (
@@ -27,20 +26,16 @@ function CatCard({ cat, position }) {
         y: '-50%',
         z: position.z,
         zIndex: position.zIndex,
-        // preserve-3d kept for depth rendering; width hard-capped so the
-        // layout box never bleeds into neighbouring cards' hit areas.
         transformStyle: 'preserve-3d',
         width: CARD_W,
       }}
       whileHover={{ scale: 1.06 }}
       transition={{ type: 'spring', stiffness: 350, damping: 28 }}
     >
-      {/* Wrapper constrains all children to the card's actual visual footprint. */}
       <div className="w-full flex flex-col items-center justify-center">
         <Link
           to={`/cat/${cat.id}`}
           style={{
-            // Explicit width prevents the <a> from expanding beyond the card.
             width: CARD_W,
             display: 'block',
             textDecoration: 'none',
@@ -60,12 +55,7 @@ function CatCard({ cat, position }) {
             <img
               src={cat.image}
               alt={cat.name}
-              style={{
-                width: '100%',
-                display: 'block',
-                aspectRatio: '3 / 4',
-                objectFit: 'cover',
-              }}
+              style={{ width: '100%', display: 'block', aspectRatio: '3 / 4', objectFit: 'cover' }}
             />
           </div>
 
@@ -109,13 +99,22 @@ export default function Home() {
     offset: ['start start', 'end end'],
   });
 
-  // Camera moves 1500px forward in Z as user scrolls through 500vh
-  const cameraZ = useTransform(scrollYProgress, [0, 1], [0, 1500]);
+  // Camera walks through 4 cats; Castañuela sits deepest at z: -2000.
+  const cameraZ = useTransform(scrollYProgress, [0, 1], [0, 1900]);
 
-  const titleOpacity = useTransform(scrollYProgress, [0, 0.08], [1, 0]);
-  const titleY      = useTransform(scrollYProgress, [0, 0.08], [0, -36]);
-  const hintOpacity = useTransform(scrollYProgress, [0, 0.04], [1, 0]);
+  // Title and hint fade early so the guardian can claim the stage.
+  const titleOpacity   = useTransform(scrollYProgress, [0, 0.08], [1, 0]);
+  const titleY         = useTransform(scrollYProgress, [0, 0.08], [0, -36]);
+  const hintOpacity    = useTransform(scrollYProgress, [0, 0.04], [1, 0]);
   const counterOpacity = useTransform(scrollYProgress, [0.06, 0.14], [0, 1]);
+
+  // Guardian Cat (Churro) — cinematic peek-a-boo intro, non-clickable.
+  // Anchored to the bottom edge; sinks below the viewport as the user scrolls.
+  const guardianY       = useTransform(scrollYProgress, [0, 0.15], ['0vh', '120vh']);
+  const guardianOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
+
+  // Gallery: Chulapa, Chulapo, Churro first — Castañuela last at the tunnel's end.
+  const galleryCats = [...cats.slice(1), cats[0]];
 
   return (
     <motion.div
@@ -124,8 +123,8 @@ export default function Home() {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.55 }}
     >
-      {/* 500vh scroll container */}
-      <div ref={containerRef} style={{ height: '500vh' }}>
+      {/* 600vh gives comfortable room for the guardian exit + full 3D walk */}
+      <div ref={containerRef} style={{ height: '600vh' }}>
 
         {/* Sticky full-viewport stage */}
         <div
@@ -137,7 +136,7 @@ export default function Home() {
             overflow: 'hidden',
           }}
         >
-          {/* Top nav */}
+          {/* Header — zIndex: 40, empty zones pass through (pointerEvents: none on nav) */}
           <Header
             style={{
               position: 'absolute',
@@ -146,7 +145,7 @@ export default function Home() {
             }}
           />
 
-          {/* Hero title — fades out on scroll */}
+          {/* Hero title — zIndex: 30 (behind guardian), fades at [0, 0.08] */}
           <div
             style={{
               position: 'absolute',
@@ -184,7 +183,7 @@ export default function Home() {
             </motion.div>
           </div>
 
-          {/* Scroll hint arrow */}
+          {/* Scroll hint — zIndex: 30, fades first at [0, 0.04] */}
           <div
             style={{
               position: 'absolute',
@@ -222,7 +221,7 @@ export default function Home() {
             </motion.div>
           </div>
 
-          {/* Edition counter — fades in on scroll */}
+          {/* Edition counter — fades IN once guardian is gone */}
           <motion.div
             style={{
               position: 'absolute',
@@ -245,7 +244,39 @@ export default function Home() {
             </p>
           </motion.div>
 
-          {/* Radial vignette */}
+          {/* ── Guardian Cat (Churro) — peek-a-boo cinematic intro ──
+              Anchored to the bottom edge, full width.
+              Desktop  (lg): h-[40vh] → only eyes/top-of-head visible (peek-a-boo).
+              Mobile/tablet : h-[60vh] → head + shoulders visible.
+              object-position: top ensures the head is always the visible portion.
+              pointerEvents: none — never intercepts gallery clicks.
+              y animation sinks it below the viewport on scroll [0, 0.15].           */}
+          {/*
+            Mobile/tablet  (<lg): h-[60vh], w-full, object-cover object-top
+                                   → head + shoulders fill the container from the top.
+            Desktop        ( lg): h-[40vh], w-[45vw], -mt-[12vh]
+                                   → narrower image (864px tall on 900px screen) pushed
+                                     up 12vh so the visible 40vh window lands on the
+                                     eye/forehead area — peek-a-boo effect.
+          */}
+          <div
+            className="absolute bottom-0 left-0 right-0 overflow-hidden h-[60vh] lg:h-[40vh] lg:flex lg:flex-col lg:items-center"
+            style={{ zIndex: 35, pointerEvents: 'none' }}
+          >
+            <motion.div
+              className="h-full lg:h-auto"
+              style={{ y: guardianY, opacity: guardianOpacity }}
+            >
+              <img
+                src={cats[3].image}
+                alt={cats[3].name}
+                className="w-full h-full object-cover object-top guardian-img"
+                style={{ filter: `drop-shadow(0 -24px 64px ${cats[3].color}50)` }}
+              />
+            </motion.div>
+          </div>
+
+          {/* Radial vignette — softens edges, behind guardian */}
           <div
             style={{
               position: 'absolute',
@@ -261,13 +292,16 @@ export default function Home() {
           <div
             style={{
               position: 'absolute',
-              inset: 0,
+              top: '100px',
+              left: 0,
+              right: 0,
+              bottom: 0,
               perspective: '1000px',
               perspectiveOrigin: '50% 46%',
               zIndex: 10,
             }}
           >
-            {/* Scene: translateZ drives the "camera walk" */}
+            {/* Scene: z: cameraZ drives the camera walk forward */}
             <motion.div
               style={{
                 position: 'absolute',
@@ -276,7 +310,7 @@ export default function Home() {
                 z: cameraZ,
               }}
             >
-              {cats.map((cat, i) => (
+              {galleryCats.map((cat, i) => (
                 <CatCard
                   key={cat.id}
                   cat={cat}
@@ -285,6 +319,7 @@ export default function Home() {
               ))}
             </motion.div>
           </div>
+
         </div>
       </div>
     </motion.div>

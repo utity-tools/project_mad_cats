@@ -24,6 +24,9 @@ export default function Header({ onBack, style: extraStyle }) {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
+        // The nav bounding box spans the full width; make the empty zones
+        // transparent to pointer events so underlying 3D cards stay clickable.
+        pointerEvents: 'none',
         ...extraStyle,
       }}
     >
@@ -37,13 +40,14 @@ export default function Header({ onBack, style: extraStyle }) {
             border: 'none',
             cursor: 'pointer',
             fontFamily: 'inherit',
+            pointerEvents: 'auto',
             ...linkStyle,
           }}
         >
           ← Galería
         </motion.button>
       ) : (
-        <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', pointerEvents: 'auto' }}>
           <img
             src="/assets/logo_mc.png"
             alt="Mad Cats"
@@ -53,7 +57,7 @@ export default function Header({ onBack, style: extraStyle }) {
       )}
 
       {/* Right side: nav links + logo when back button is shown */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '28px', pointerEvents: 'auto' }}>
         {onBack && (
           <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
             <img
@@ -63,6 +67,9 @@ export default function Header({ onBack, style: extraStyle }) {
             />
           </Link>
         )}
+        <Link to="/cats" style={linkStyle}>
+          Gatos
+        </Link>
         <Link to="/about" style={linkStyle}>
           About
         </Link>

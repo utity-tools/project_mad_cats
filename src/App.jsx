@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Detail from './pages/Detail';
 import Contact from './pages/Contact';
 import About from './pages/About';
+import CatListing from './pages/CatListing';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -14,6 +15,7 @@ function AnimatedRoutes() {
         <Route path="/cat/:id" element={<Detail />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About />} />
+        <Route path="/cats" element={<CatListing />} />
       </Routes>
     </AnimatePresence>
   );
