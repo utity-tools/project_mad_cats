@@ -1,22 +1,32 @@
-# 🐱 MAD CATS
-### *The Underground 3D Digital Art Collection*
+# 🤖 project_mad_cats| Cat Gallery
 
----
+A React experience focused on **Z-axis immersive navigation**.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/b122a5c9-59df-4592-920d-d8438132754d" width="100%" alt="Mad Cats Home Showcase">
+  <img src="https://github.com/user-attachments/assets/b122a5c9-59df-4592-920d-d8438132754d" width="100%" alt="Technical Showcase">
 </p>
 
-## 🎭 La Experiencia
-Mad Cats redefine la narrativa visual mediante un **túnel inmersivo en el eje Z**. No es una galería; es una inmersión en el ecosistema castizo-futurista de Madrid.
+---
+
+### 🛠️ The Tech Stack
+* ⚛️ **React 18 & Vite** - Ultra-fast UI architecture.
+* 🎭 **Framer Motion** - 60fps Scroll-to-Depth mapping engine.
+* 🎨 **Tailwind CSS** - Modern mobile-first responsive design.
+* 🛰️ **Vercel** - Edge Deployment & CI/CD.
+* 🤖 **AI-Augmented** - Architected in collaboration with **Claude 3.5 Sonnet**.
 
 ---
 
-## 🤖 Ingeniería de Vanguardia (Human-AI Collaboration)
-Este proyecto es un caso de estudio de **Desarrollo Aumentado por IA**, utilizando **Claude 3.5 Sonnet** para:
-* **Z-Axis Rendering:** Lógica de scroll 3D fluida.
-* **Responsive Architecture:** Adaptación cinematográfica de layouts en tiempo real.
+### ⚙️ Core Technical Implementation
 
----
+The engine maps vertical scroll to a 3D tunnel effect:
 
-🚀 **[Explorar Mad Cats Live](https://project-mad-cats.vercel.app)**
+```javascript
+const { scrollYProgress } = useScroll({ target: containerRef });
+const zTranslation = useTransform(scrollYProgress, [0, 1], ["0px", "3000px"]);
+
+return (
+  <motion.div style={{ translateZ: zTranslation }}>
+    {/* Cinematic Content */}
+  </motion.div>
+);
