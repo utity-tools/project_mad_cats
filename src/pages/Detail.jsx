@@ -1,6 +1,7 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAppContext } from '../context/AppContext';
+import Header from '../components/Header';
 
 export default function Detail() {
   const { id } = useParams();
@@ -48,49 +49,15 @@ export default function Detail() {
       style={{ minHeight: '100vh', background: '#080808' }}
     >
       {/* Nav */}
-      <nav
+      <Header
+        onBack={handleBack}
         style={{
           position: 'fixed',
           top: 0, left: 0, right: 0,
-          padding: '22px 32px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
           zIndex: 50,
-          background: 'linear-gradient(to bottom, #080808, transparent)',
+          background: 'linear-gradient(to bottom, #080808e0, transparent)',
         }}
-      >
-        <motion.button
-          onClick={handleBack}
-          whileHover={{ color: '#f0ede8' }}
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: '11px',
-            letterSpacing: '0.22em',
-            textTransform: 'uppercase',
-            color: '#ffffff45',
-            fontFamily: 'inherit',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-          }}
-        >
-          ← Galería
-        </motion.button>
-        <span
-          style={{
-            fontSize: '12px',
-            fontWeight: 800,
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-            color: cat.color,
-          }}
-        >
-          Mad Cats
-        </span>
-      </nav>
+      />
 
       {/* Content grid */}
       <div

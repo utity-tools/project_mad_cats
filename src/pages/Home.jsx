@@ -1,96 +1,107 @@
 import { useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useAppContext } from '../context/AppContext';
+import Header from '../components/Header';
 
 // Each cat's position in the 3D tunnel (xVw = vw offset from center, yVh = vh offset, z = depth in px)
+// zIndex mirrors 3D depth in 2D stacking: closest card must win over overlapping siblings.
 const CAT_POSITIONS = [
-  { xVw: -27, yVh:  2, z: -320  },
-  { xVw:  24, yVh: -7, z: -760  },
-  { xVw: -21, yVh:  9, z: -1200 },
-  { xVw:  13, yVh:  0, z: -1640 },
+  { xVw: -27, yVh:  2, z: -320,  zIndex: 40 },
+  { xVw:  24, yVh: -7, z: -760,  zIndex: 30 },
+  { xVw: -21, yVh:  9, z: -1200, zIndex: 20 },
+  { xVw:  13, yVh:  0, z: -1640, zIndex: 10 },
 ];
 
-function CatCard({ cat, position, onClick }) {
+function CatCard({ cat, position }) {
+  // Card width as a shared value so the Link and motion.div agree on the same size.
+  const CARD_W = 'clamp(140px, 18vw, 240px)';
+
   return (
-    <div
+    <motion.div
       style={{
         position: 'absolute',
         left: `calc(50% + ${position.xVw}vw)`,
         top: `calc(50% + ${position.yVh}vh)`,
-        translateX: '-50%',
-        translateY: '-50%',
+        x: '-50%',
+        y: '-50%',
+        z: position.z,
+        zIndex: position.zIndex,
+        // preserve-3d kept for depth rendering; width hard-capped so the
+        // layout box never bleeds into neighbouring cards' hit areas.
         transformStyle: 'preserve-3d',
-        width: 'clamp(140px, 18vw, 240px)',
+        width: CARD_W,
       }}
+      whileHover={{ scale: 1.06 }}
+      transition={{ type: 'spring', stiffness: 350, damping: 28 }}
     >
-      <motion.div
-        onClick={onClick}
-        style={{
-          translateX: '-50%',
-          translateY: '-50%',
-          translateZ: position.z,
-          transformStyle: 'preserve-3d',
-          cursor: 'pointer',
-          width: 'clamp(140px, 18vw, 240px)',
-        }}
-        whileHover={{ scale: 1.06 }}
-        transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-      >
-        <div
+      {/* Wrapper constrains all children to the card's actual visual footprint. */}
+      <div className="w-full flex flex-col items-center justify-center">
+        <Link
+          to={`/cat/${cat.id}`}
           style={{
-            borderRadius: '3px',
-            overflow: 'hidden',
-            border: `1px solid ${cat.color}35`,
-            boxShadow: `0 4px 24px ${cat.color}18, 0 0 60px ${cat.color}10`,
-            background: '#0d0d0d',
+            // Explicit width prevents the <a> from expanding beyond the card.
+            width: CARD_W,
+            display: 'block',
+            textDecoration: 'none',
+            color: 'inherit',
+            cursor: 'pointer',
           }}
         >
-          <img
-            src={cat.image}
-            alt={cat.name}
+          <div
             style={{
-              width: '100%',
-              display: 'block',
-              aspectRatio: '3 / 4',
-              objectFit: 'cover',
+              borderRadius: '3px',
+              overflow: 'hidden',
+              border: `1px solid ${cat.color}35`,
+              boxShadow: `0 4px 24px ${cat.color}18, 0 0 60px ${cat.color}10`,
+              background: '#0d0d0d',
             }}
-          />
-        </div>
+          >
+            <img
+              src={cat.image}
+              alt={cat.name}
+              style={{
+                width: '100%',
+                display: 'block',
+                aspectRatio: '3 / 4',
+                objectFit: 'cover',
+              }}
+            />
+          </div>
 
-        <div style={{ marginTop: '10px', textAlign: 'center', paddingBottom: '4px' }}>
-          <p
-            style={{
-              fontSize: 'clamp(8px, 0.85vw, 10px)',
-              letterSpacing: '0.28em',
-              textTransform: 'uppercase',
-              color: cat.color,
-              opacity: 0.8,
-              marginBottom: '3px',
-            }}
-          >
-            {cat.title}
-          </p>
-          <p
-            style={{
-              fontSize: 'clamp(13px, 1.5vw, 18px)',
-              fontWeight: 700,
-              color: '#f0ede8',
-              letterSpacing: '-0.02em',
-              lineHeight: 1,
-            }}
-          >
-            {cat.name}
-          </p>
-        </div>
-      </motion.div>
-    </div>
+          <div style={{ marginTop: '10px', textAlign: 'center', paddingBottom: '4px' }}>
+            <p
+              style={{
+                fontSize: 'clamp(8px, 0.85vw, 10px)',
+                letterSpacing: '0.28em',
+                textTransform: 'uppercase',
+                color: cat.color,
+                opacity: 0.8,
+                marginBottom: '3px',
+              }}
+            >
+              {cat.title}
+            </p>
+            <p
+              style={{
+                fontSize: 'clamp(13px, 1.5vw, 18px)',
+                fontWeight: 700,
+                color: '#f0ede8',
+                letterSpacing: '-0.02em',
+                lineHeight: 1,
+              }}
+            >
+              {cat.name}
+            </p>
+          </div>
+        </Link>
+      </div>
+    </motion.div>
   );
 }
 
 export default function Home() {
   const { cats } = useAppContext();
-  const navigate = useNavigate();
   const containerRef = useRef(null);
 
   const { scrollYProgress } = useScroll({
@@ -127,41 +138,13 @@ export default function Home() {
           }}
         >
           {/* Top nav */}
-          <nav
+          <Header
             style={{
               position: 'absolute',
               top: 0, left: 0, right: 0,
-              padding: '22px 32px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
               zIndex: 40,
             }}
-          >
-            <span
-              style={{
-                fontSize: '12px',
-                fontWeight: 800,
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                color: '#FF6B35',
-              }}
-            >
-              Mad Cats
-            </span>
-            <Link
-              to="/contact"
-              style={{
-                fontSize: '11px',
-                letterSpacing: '0.22em',
-                textTransform: 'uppercase',
-                color: '#ffffff45',
-                textDecoration: 'none',
-              }}
-            >
-              Contacto
-            </Link>
-          </nav>
+          />
 
           {/* Hero title — fades out on scroll */}
           <div
@@ -298,7 +281,6 @@ export default function Home() {
                   key={cat.id}
                   cat={cat}
                   position={CAT_POSITIONS[i]}
-                  onClick={() => navigate(`/detail/${cat.id}`)}
                 />
               ))}
             </motion.div>

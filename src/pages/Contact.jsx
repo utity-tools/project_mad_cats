@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import Header from '../components/Header';
 
 const FIELDS = [
   { name: 'name',  label: 'Nombre', type: 'text',  placeholder: 'Tu nombre' },
@@ -38,39 +38,7 @@ export default function Contact() {
       transition={{ duration: 0.5 }}
       style={{ minHeight: '100vh', background: '#080808', display: 'flex', flexDirection: 'column' }}
     >
-      {/* Nav */}
-      <nav
-        style={{
-          padding: '22px 32px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
-        <span
-          style={{
-            fontSize: '12px',
-            fontWeight: 800,
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-            color: '#FF6B35',
-          }}
-        >
-          Mad Cats
-        </span>
-        <Link
-          to="/"
-          style={{
-            fontSize: '11px',
-            letterSpacing: '0.22em',
-            textTransform: 'uppercase',
-            color: '#ffffff45',
-            textDecoration: 'none',
-          }}
-        >
-          ← Galería
-        </Link>
-      </nav>
+      <Header />
 
       {/* Form area */}
       <div

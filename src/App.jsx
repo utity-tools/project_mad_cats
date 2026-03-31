@@ -3,6 +3,7 @@ import { AnimatePresence } from 'framer-motion';
 import Home from './pages/Home';
 import Detail from './pages/Detail';
 import Contact from './pages/Contact';
+import About from './pages/About';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -10,8 +11,9 @@ function AnimatedRoutes() {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Home />} />
-        <Route path="/detail/:id" element={<Detail />} />
+        <Route path="/cat/:id" element={<Detail />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/about" element={<About />} />
       </Routes>
     </AnimatePresence>
   );
