@@ -29,4 +29,22 @@ return (
   <motion.div style={{ translateZ: zTranslation }}>
     {/* Cinematic Content */}
   </motion.div>
+
+
+---
+
+### 📦 Quick Start
+1. `git clone https://github.com/tu-usuario/project_mad_cats.git`
+2. `npm install`
+3. `npm run dev`
+
+---
+
+### 📄 License
+**MIT License** - Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software.
+
+---
+
+*Developed with ❤️ and AI-Augmented Engineering.*
+
 );
